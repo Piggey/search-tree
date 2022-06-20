@@ -1,36 +1,38 @@
+#include <iostream>
 #include "Tree.h"
 
 Tree::Tree()
 {
-    m_root = new TreeNode;
-    m_root->c = 0;
+    m_root.c = 0;
     m_size = 0;
 }
 
-Tree::Tree(std::vector<std::string> wordlist)
+Tree::Tree(const std::vector<std::string>& wordlist)
 {
-    m_root = new TreeNode;
-    m_root->c = 0;
+    std::cout << "ty no to sie odpala teraz nie\n";
+    m_root.c = 0;
     m_size = 0;
 
-    for (std::string word : wordlist)
-    {
-        // todo: log on error
-        // logging in general lol
-        put(word);
-    }
+    for (const std::string& word: wordlist)
+        if (!word.empty()) put(word);
 }
 
-void Tree::put(std::string word)
+void Tree::put(const std::string& word)
 {
+    // FIXME: HEAP CORRUPTION SOMEHOW???? ERROR 0xC0000374
+
     // store the node we're putting a new node into
     // starting from root
-    TreeNode* parent_node = m_root;
+    TreeNode* current = &m_root;
+
+    // this prevents incrementing m_size
+    // when 2 same words will be provided
+    bool node_created = false;
 
     for (char c : word)
     {
         // check if there is a node with this character
-        int child_node_index = check_node_exists(parent_node, c);
+        int child_node_index = check_node_exists(current, c);
 
         if (child_node_index == -1) // does not exist
         {
@@ -39,40 +41,59 @@ void Tree::put(std::string word)
             node.c = c;
 
             // move into the created node
-            parent_node->children.push_back(&node);
+            current->children.push_back(&node);
+
+            node_created = true;
         }
         else // node already exists
         {
-            parent_node = parent_node->children[child_node_index];
+            current = current->children[child_node_index];
         }
     }
 
+    if (!node_created && current->children[0] == nullptr)
+        return; // user put 2 same words
+
+    // signal end of word
+    current->children.insert(current->children.begin(), nullptr);
     m_size++;
 }
 
-std::vector<std::string> Tree::find(std::string prefix)
+std::vector<std::string> Tree::find(const std::string& prefix)
 {
-    return std::vector<std::string>();
+    std::vector<std::string> out;
+    TreeNode* current = &m_root;
+
+    // go through the nodes from the prefix, if they exist
+    for (char c : prefix)
+    {
+        int child_index = check_node_exists(current, c);
+
+        if (child_index == -1)
+            return out; // there arent any words with that prefix
+
+        current = current->children[child_index];
+    }
+
+    // basically DFS through the nodes
+    return out;
 }
 
-size_t Tree::size()
+size_t Tree::size() const
 {
     return m_size;
 }
 
-Tree::~Tree()
-{
-    delete m_root;
-}
-
-int Tree::check_node_exists(TreeNode *parent, char c)
+int Tree::check_node_exists(TreeNode* parent, char c)
 {
     for (int i = 0; i < parent->children.size(); i++)
     {
+        // skip end of word signal
+        if (parent->children[i] == nullptr)
+            continue;
+
         if (parent->children[i]->c == c)
-        {
             return i;
-        }
     }
 
     return -1;
