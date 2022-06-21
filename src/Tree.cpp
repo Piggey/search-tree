@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Tree.h"
+#include "logger.h"
 
 Tree::Tree()
 {
@@ -15,11 +16,13 @@ Tree::Tree(const std::vector<std::string>& wordlist)
 
     for (const std::string& word: wordlist)
         if (!word.empty()) put(word);
+
+    LOG_INFO("new Tree object created with provided wordlist");
 }
 
 void Tree::put(const std::string& word)
 {
-    // FIXME: HEAP CORRUPTION SOMEHOW???? ERROR 0xC0000374
+    LOG_INFO("putting word into Tree")
 
     // store the node we're putting a new node into
     // starting from root
@@ -52,11 +55,15 @@ void Tree::put(const std::string& word)
     }
 
     if (!node_created && current->children[0] == nullptr)
+    {
+        LOG_WARN("tried to put word that was already in a Tree");
         return; // user put 2 same words
+    }
 
     // signal end of word
     current->children.insert(current->children.begin(), nullptr);
     m_size++;
+    LOG_INFO("new word inserted into Tree");
 }
 
 std::vector<std::string> Tree::find(const std::string& prefix)

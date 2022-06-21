@@ -8,7 +8,9 @@ include_directories(inc)
 add_executable(${PROJECT_NAME}
         src/main.cpp
         inc/Tree.h src/Tree.cpp
-        inc/TreeNode.h)
+        inc/TreeNode.h
+        inc/logger.h
+)
 
 ## TESTS ##
 enable_testing()
