@@ -7,4 +7,5 @@ TEST(tree_node_class_test, constructor)
 {
     TreeNode tn;
     EXPECT_EQ(tn.children.size(), 0);
+    EXPECT_FALSE(tn.eow);
 }
