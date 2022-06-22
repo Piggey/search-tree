@@ -91,37 +91,61 @@ std::vector<std::string> Tree::find(std::string prefix)
         current = &current->children[child_index];
     }
 
-    std::string word = prefix;
-    std::stack<TreeNode*> stack; // dfs stack
 
-    // in case provided prefix is already a word
+    std::string word = prefix;
+    std::stack<TreeNode*> node_stack;       // for dfs
+    std::stack<int> words_counter_stack;    // stack used to keep prefix words counters
+    int words_counter;
+
+    // in case provided prefix is a word
     if (current->eow)
         out.push_back(word);
 
-    // push children nodes to stack
-    for (auto& child : current->children)
-        stack.push(&child);
-
-    while (!stack.empty())
+    // push children nodes to node_stack
+    for (int i = current->children.size() - 1; i >= 0; i--)
     {
-        current = stack.top(); stack.pop();
+        // number of words to get with this prefix
+        words_counter = current->children.size();
+        words_counter_stack.push(words_counter);
+
+        // from back to front so then
+        // found answers will be from left side of the tree
+        // to the right side
+        node_stack.push(&current->children[i]);
+    }
+
+    while (!node_stack.empty())
+    {
+        current = node_stack.top(); node_stack.pop();
         word += current->c;
 
+        // we got to the end of some word
         if (current->eow)
         {
             out.push_back(word);
             LOG_INFO("word found");
 
-            if (current->children.size() == 0)
-                word = prefix;
+            // we got all the words we wanted with current prefix
+            if (--words_counter == 0)
+            {
+                prefix.pop_back();
+                words_counter = words_counter_stack.top(); words_counter_stack.pop();
+            }
+
+            word = prefix; // ready the word variable for next word
         }
 
         if (current->children.size() > 1)
+        {
+            words_counter = current->children.size();
+            words_counter_stack.push(words_counter);
+
             // since we will be coming back to this node
             prefix += current->c;
+        }
 
-        for (auto& child : current->children)
-            stack.push(&child);
+        for (int i = current->children.size() - 1; i >= 0; i--)
+            node_stack.push(&current->children[i]);
     }
 
     return out;
