@@ -87,8 +87,39 @@ std::vector<std::string> Tree::find(const std::string& prefix)
         current = &current->children[child_index];
     }
 
-    // basically DFS through the nodes
-    // todo: implement that shit now lmao
+    std::string word = prefix;
+    std::stack<TreeNode*> stack; // dfs stack
+
+    // in case provided prefix is already a word
+    if (current->eow)
+        out.push_back(word);
+
+    // push children nodes to stack
+    for (auto& child : current->children)
+        stack.push(&child);
+
+    while (!stack.empty())
+    {
+        current = stack.top(); stack.pop();
+        word += current->c;
+
+        if (current->eow)
+        {
+            out.push_back(word);
+            LOG_INFO("word found");
+
+            if (current->children.size() == 0)
+                word = prefix;
+        }
+
+        if (current->children.size() > 1)
+            // since we will be coming back to this node
+            prefix += current->c;
+
+        for (auto& child : current->children)
+            stack.push(&child);
+    }
+
     return out;
 }
 
