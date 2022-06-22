@@ -71,16 +71,20 @@ void Tree::put(const std::string& word)
     LOG_INFO("new word inserted into Tree");
 }
 
-std::vector<std::string> Tree::find(const std::string& prefix)
+void Tree::remove(const std::string &word)
 {
-    std::vector<std::string> out;
+    // todo: to be implemented
+}
+
+std::vector<std::string> Tree::find(std::string prefix)
+{
+    std::vector<std::string> out; // list of found words
     TreeNode* current = &m_root;
 
     // go through the nodes from the prefix, if they exist
     for (char c : prefix)
     {
         int child_index = check_node_exists(current, c);
-
         if (child_index == -1)
             return out; // there arent any words with that prefix
 
@@ -126,17 +130,6 @@ std::vector<std::string> Tree::find(const std::string& prefix)
 size_t Tree::size() const
 {
     return m_size;
-}
-
-int Tree::check_node_exists(const TreeNode* parent, char c)
-{
-    for (int i = 0; i < parent->children.size(); i++)
-    {
-        if (parent->children[i].c == c)
-            return i;
-    }
-
-    return -1;
 }
 
 Tree::~Tree()
