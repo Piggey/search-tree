@@ -32,27 +32,21 @@ TEST(tree_class_test, put)
 
 TEST(tree_class_test, find)
 {
-    std::vector<std::string> wordlist { "Kappa", "Kappar", "Krey", "Kretyn" };
+    std::vector<std::string> wordlist { "foo", "bar", "baz", "fizz", "buzz", "fizzbuzz" };
     Tree t(wordlist);
 
+    // normal search
+    std::vector<std::string> found = t.find("ba"); // bar, baz
+    EXPECT_EQ(found.size(), 2);
+    EXPECT_EQ(found[0], "bar");
+    EXPECT_EQ(found[1], "baz");
 
-    std::vector<std::string> found = t.find("Kr"); // Kretyn, Krey
-    for (int i = 0; i < found.size(); i++)
-    {
-        std::cout << found[i] << "\n";
-    }
+    // prefix whole word
+    found = t.find("fizzbuzz"); // fizzbuzz
+    EXPECT_EQ(found.size(), 1);
+    EXPECT_EQ(found[0], "fizzbuzz");
 
-    found = t.find("Kappa"); // Kappa, Kappar
-    for (int i = 0; i < found.size(); i++)
-    {
-        std::cout << found[i] << "\n";
-    }
-
-    wordlist = {"abd", "abe", "acf", "acg"};
-    Tree t2(wordlist);
-    found = t2.find("a");
-    for (int i = 0; i < found.size(); i++)
-    {
-        std::cout << found[i] << "\n";
-    }
+    // search for a word that doesnt exist in Tree
+    found = t.find("abcd");
+    EXPECT_EQ(found.size(), 0);
 }
