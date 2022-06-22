@@ -71,7 +71,7 @@ void Tree::put(const std::string& word)
     LOG_INFO("new word inserted into Tree");
 }
 
-void Tree::remove(const std::string &word)
+void Tree::remove(const std::string& word)
 {
     // todo: to be implemented
 }
