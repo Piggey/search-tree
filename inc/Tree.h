@@ -41,17 +41,7 @@ public:
      */
     size_t size() const;
 
-    virtual ~Tree() = default;
-
-private: // functions
-    /**
-     * @brief check whether parent node has a child with char c
-     * @param parent: parent Tree node
-     * @param c: character to be checked
-     * @attention this function returns -1 when child node was NOT found
-     * @return index of child with char c, or -1 when not found
-     */
-    int check_node_exists(TreeNode* parent, char c);
+    ~Tree();
 
 private: // fields
     TreeNode m_root;
