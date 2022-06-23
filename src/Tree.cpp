@@ -73,7 +73,25 @@ void Tree::put(const std::string& word)
 
 void Tree::remove(const std::string& word)
 {
-    // todo: to be implemented
+    TreeNode current = m_root;
+
+    // go through all of word's nodes and delete them if possible
+    for (char c : word)
+    {
+        int child_index = check_node_exists(&current, c);
+
+        if (child_index == -1)
+            // word doesnt exist in a Tree
+            return;
+
+        // we can delete the node
+
+    }
+    // for each letter in word
+    //  - check if it exists
+    //  - check if has more than one children
+    //  - if not: delete; if yes: keep the node
+    //  - decrement m_size
 }
 
 std::vector<std::string> Tree::find(std::string prefix) const
