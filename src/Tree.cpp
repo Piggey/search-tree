@@ -76,10 +76,17 @@ void Tree::remove(const std::string& word)
     // todo: to be implemented
 }
 
-std::vector<std::string> Tree::find(std::string prefix)
+std::vector<std::string> Tree::find(std::string prefix) const
 {
     std::vector<std::string> out; // list of found words
-    TreeNode* current = &m_root;
+    const TreeNode* current = &m_root;
+
+    // empty Tree case
+    if (m_size == 0)
+    {
+        LOG_WARN("tried to search an empty Tree.");
+        return out;
+    }
 
     // go through the nodes from the prefix, if they exist
     for (char c : prefix)
@@ -93,7 +100,7 @@ std::vector<std::string> Tree::find(std::string prefix)
 
 
     std::string word = prefix;
-    std::stack<TreeNode*> node_stack;       // for dfs
+    std::stack<const TreeNode*> node_stack; // for dfs
     std::stack<int> words_counter_stack;    // stack used to keep prefix words counters
     int words_counter;
 

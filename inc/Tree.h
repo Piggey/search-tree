@@ -39,7 +39,7 @@ public:
      * @attention function returns empty vector when nothing was found
      * @return a list of all words with provided prefix in a Tree
      */
-    std::vector<std::string> find(std::string prefix);
+    std::vector<std::string> find(std::string prefix) const;
 
     /**
      * @brief number of words currently stored in a Tree
