@@ -49,4 +49,10 @@ TEST(tree_class_test, find)
     // search for a word that doesnt exist in Tree
     found = t.find("abcd");
     EXPECT_EQ(found.size(), 0);
+
+    // search in an empty Tree
+    Tree t2;
+    found = t2.find("");
+    EXPECT_EQ(found.size(), 0);
+
 }
