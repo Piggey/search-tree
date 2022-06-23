@@ -73,19 +73,37 @@ void Tree::put(const std::string& word)
 
 void Tree::remove(const std::string& word)
 {
-    TreeNode current = m_root;
+    const TreeNode* current = &m_root;
 
     // go through all of word's nodes and delete them if possible
     for (char c : word)
     {
-        int child_index = check_node_exists(&current, c);
+        int child_index = check_node_exists(current, c);
 
+        // word doesnt exist in a Tree
         if (child_index == -1)
-            // word doesnt exist in a Tree
+        {
+            LOG_WARN("tried to remove a word that did not exist in a Tree");
             return;
+        }
 
-        // we can delete the node
+        // leaf node case
+        if (current->children.empty())
+        {
 
+        }
+
+        // provided word is the only one that uses this node, we can delete it
+        else if (current->children.size() == 1)
+        {
+            // we can delete the node
+        }
+
+        // node is used by more than one word, we cannot delete it
+        else
+        {
+
+        }
     }
     // for each letter in word
     //  - check if it exists
