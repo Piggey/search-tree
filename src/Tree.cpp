@@ -109,15 +109,15 @@ std::vector<std::string> Tree::find(std::string prefix) const
         out.push_back(word);
 
     // push children nodes to node_stack
+    // from back to front so then
+    // found answers will be from left side of the tree
+    // to the right side
     for (int i = current->children.size() - 1; i >= 0; i--)
     {
         // number of words to get with this prefix
         words_counter = current->children.size();
         words_counter_stack.push(words_counter);
 
-        // from back to front so then
-        // found answers will be from left side of the tree
-        // to the right side
         node_stack.push(&current->children[i]);
     }
 
