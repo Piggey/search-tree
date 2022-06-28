@@ -3,6 +3,14 @@
 
 #include <vector>
 #include <string>
+#include <queue>
+
+/**
+ * @brief get the count of nodes currently used by the Tree
+ * @param tree: Tree object pointer we want to check
+ * @return count of the nodes (with root node!)
+ */
+int get_tree_node_count(const Tree* tree);
 
 TEST(tree_class_test, constuctors)
 {
@@ -92,4 +100,26 @@ TEST(tree_class_test, find)
     found = t2.find("");
     EXPECT_EQ(found.size(), 0);
 
+}
+
+int get_tree_node_count(const Tree* tree)
+{
+    int counter = 0;
+    std::queue<const TreeNode*> q;
+
+    q.push(tree->root());
+    counter++; // should i even consider a root node as a node?
+
+    while (!q.empty())
+    {
+        const TreeNode* node = q.front(); q.pop();
+
+        for (const auto& child : node->children)
+        {
+            q.push(&child);
+            counter++;
+        }
+    }
+
+    return counter;
 }
