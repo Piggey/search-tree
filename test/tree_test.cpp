@@ -18,10 +18,13 @@ TEST(tree_class_test, constuctors)
     Tree t;
     EXPECT_EQ(t.size(), 0);
 
+    EXPECT_EQ(get_tree_node_count(&t), 1);
+
     // init Tree with words list
-    std::vector<std::string> sample_words { "widePeepoHappy", "widePeepoSad" };
-    Tree t2(sample_words);
+    Tree t2({ "widePeepoHappy", "widePeepoSad" });
+
     EXPECT_EQ(t2.size(), 2);
+    EXPECT_EQ(get_tree_node_count(&t2), 1 + 9 + 5 + 3);
 }
 
 TEST(tree_class_test, put)
@@ -77,8 +80,7 @@ TEST(tree_class_test, remove)
 
 TEST(tree_class_test, find)
 {
-    std::vector<std::string> wordlist { "foo", "bar", "baz", "fizz", "buzz", "fizzbuzz" };
-    Tree t(wordlist);
+    Tree t({ "foo", "bar", "baz", "fizz", "buzz", "fizzbuzz" });
 
     // normal search
     std::vector<std::string> found = t.find("ba"); // bar, baz
@@ -95,11 +97,18 @@ TEST(tree_class_test, find)
     found = t.find("abcd");
     EXPECT_EQ(found.size(), 0);
 
+    // search with empty string
+    found = t.find("");
+    EXPECT_EQ(found.size(), 6);
+
+    // search something longer than existing word
+    found = t.find("barz");
+    EXPECT_EQ(found.size(), 0);
+
     // search in an empty Tree
     Tree t2;
     found = t2.find("");
     EXPECT_EQ(found.size(), 0);
-
 }
 
 int get_tree_node_count(const Tree* tree)
