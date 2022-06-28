@@ -73,11 +73,22 @@ void Tree::put(const std::string& word)
 
 void Tree::remove(const std::string& word)
 {
-    const TreeNode* current = &m_root;
-
-    // go through all of word's nodes and delete them if possible
-    for (char c : word)
+    if (m_size == 0)
     {
+        LOG_WARN("tried to remove a word from an empty Tree");
+        return;
+    }
+
+    TreeNode* current = &m_root;
+
+    // keep the parent node and child index of the node we want to delete
+    // stack since we want to delete them bottom up
+    std::stack<std::pair<TreeNode*, int>> to_be_deleted;
+
+    // collect the nodes that will be deleted
+    for (int i = 0; i < word.size(); i++)
+    {
+        char c = word[i];
         int child_index = check_node_exists(current, c);
 
         // word doesnt exist in a Tree
@@ -87,29 +98,25 @@ void Tree::remove(const std::string& word)
             return;
         }
 
-        // leaf node case
-        if (current->children.empty())
+        // one word is using current node
+        if (find(word.substr(0, i + 1)).size() <= 1)
         {
-
+            to_be_deleted.push(std::make_pair(current, child_index));
         }
 
-        // provided word is the only one that uses this node, we can delete it
-        else if (current->children.size() == 1)
-        {
-            // we can delete the node
-        }
-
-        // node is used by more than one word, we cannot delete it
-        else
-        {
-
-        }
+        current = &current->children[child_index];
     }
-    // for each letter in word
-    //  - check if it exists
-    //  - check if has more than one children
-    //  - if not: delete; if yes: keep the node
-    // decrement m_size
+
+    current->eow = false;   // unset the end of word flag on the last node (if was used)
+    m_size--;               // decrement words counter
+
+    // delete the nodes
+    while (!to_be_deleted.empty())
+    {
+        auto pair = to_be_deleted.top(); to_be_deleted.pop();
+        auto pos = pair.first->children.begin() + pair.second;
+        pair.first->children.erase(pos);
+    }
 }
 
 std::vector<std::string> Tree::find(std::string prefix) const
