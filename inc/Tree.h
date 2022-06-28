@@ -17,7 +17,7 @@ public:
      * @brief initializes a Tree object with provided list of words
      * @param wordlist: vector of words to be put inside a Tree
      */
-    Tree(const std::vector<std::string>& wordlist);
+    explicit Tree(const std::vector<std::string>& wordlist);
 
     /**
      * @brief put a word into a Tree
