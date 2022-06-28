@@ -215,6 +215,11 @@ Tree::~Tree()
     // todo: free the memory from all the TreeNodes
 }
 
+const TreeNode* Tree::root() const
+{
+    return &m_root;
+}
+
 int check_node_exists(const TreeNode* parent, char c)
 {
     for (int i = 0; i < parent->children.size(); i++)
