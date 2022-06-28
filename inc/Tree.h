@@ -3,7 +3,6 @@
 
 #include "TreeNode.h"
 
-#include <vector>
 #include <string>
 
 class Tree
