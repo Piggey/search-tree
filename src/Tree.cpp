@@ -172,7 +172,11 @@ std::vector<std::string> Tree::find(std::string prefix) const
             if (--words_counter == 0)
             {
                 prefix.pop_back();
-                words_counter = words_counter_stack.top(); words_counter_stack.pop();
+
+                if (!words_counter_stack.empty())
+                {
+                    words_counter = words_counter_stack.top(); words_counter_stack.pop();
+                }
             }
 
             word = prefix; // ready the word variable for next word
