@@ -30,6 +30,43 @@ TEST(tree_class_test, put)
     EXPECT_EQ(t.size(), 2);
 }
 
+TEST(tree_class_test, remove)
+{
+    Tree t;
+
+    // remove from empty Tree
+    EXPECT_EQ(t.size(), 0);
+    t.remove("nonexistent_word");
+    EXPECT_EQ(t.size(), 0);
+
+    t.put("kretyn");
+    t.put("kreyoei");
+
+    // normal remove() use case
+    EXPECT_EQ(t.find("kr").size(), 2);
+    t.remove("kretyn");
+    EXPECT_EQ(t.find("kr").size(), 1);
+    EXPECT_EQ(t.find("kr")[0], "kreyoei");
+
+    // try to remove the same word
+    t.remove("kretyn");
+    EXPECT_EQ(t.find("kr").size(), 1);
+
+
+    // try to remove word thats nested inside another word
+    // (dont delete any nodes, but decrement word counter)
+    t.put("kretyn");
+    t.put("kretynka");
+
+    EXPECT_EQ(t.size(), 3);
+    t.remove("kretyn");
+    EXPECT_EQ(t.size(), 2);
+
+    auto found = t.find("kr");
+    EXPECT_EQ(found[0], "kreyoei");
+    EXPECT_EQ(found[1], "kretynka");
+}
+
 TEST(tree_class_test, find)
 {
     std::vector<std::string> wordlist { "foo", "bar", "baz", "fizz", "buzz", "fizzbuzz" };
