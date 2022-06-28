@@ -16,7 +16,7 @@ struct TreeNode
     TreeNode() = default;
 
     // for std::vector.emplace_back()
-    TreeNode(char c)
+    explicit TreeNode(char c)
     {
         this->c = c;
     }
