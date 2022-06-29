@@ -1,8 +1,11 @@
 # search-tree
 
-![visualization of the data structure](imgs/visualization.jpg)
+![visualisation of the tree data structure](imgs/visualization.jpg)
 
 ## Overview
+Inspired by Twitch chat's emote hinting (i.e. 'Coo' gets changed to 'CoolCat' when pressing TAB)
+
+
 This tree data structure is useful for finding all kept words given the prefix.
 Hopefully should be much faster than using other data structures, such as vectors.
 
@@ -39,15 +42,28 @@ t.find("ba"); // returns: { "baz", "bar" }
 - `Tree.root()` - returns an immutable reference to the root node of the tree.
 
 ## Problems with current implementation
+Problems that I'll try to fix in the next version of this project.
+
+### Not sharing nodes
+
 Consider a case when we try to put "Ba" and "Da" into a tree.
 
 That object would look like this:
 
-![visualization of a bad case](imgs/bad_case.jpg)
+![visualisation of a bad case](imgs/bad_case.jpg)
 
 As you can see, the 'a' node is being created for every parent node. This is BAD!
 This means that memory size of the Tree object will grow exponentially.
 
 Instead, both nodes 'B' and 'D' should use the same 'a' node.
 
-I'll try to fix this problem in the next version of this project.
+### No option to be case-agnostic
+
+When trying to search a tree with 'BAR' and 'baz'
+with prefix 'ba', only 'baz' will be returned.
+
+I want to add the option to be case-agnostic, which means the previous example should return both 'BAR' and 'baz'
+
+### ...Shouldn't this be a library??
+
+Yes. Yes it should.
