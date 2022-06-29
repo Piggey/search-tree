@@ -1,5 +1,5 @@
 #include "Tree.h"
-#include "logger.h"
+#include "tinylogger/tinylogger.h"
 
 #include <stack>
 
@@ -16,18 +16,18 @@ Tree::Tree()
 {
     m_root.c = 0;
     m_size = 0;
-    LOG_INFO("new Tree object created");
+    tlog::info() << "new tree object created";
 }
 
 Tree::Tree(const std::vector<std::string>& wordlist)
 {
+    tlog::info() << "creating new tree object with wordlist of size " << wordlist.size();
     m_root.c = 0;
     m_size = 0;
 
     for (const std::string& word: wordlist)
-        if (!word.empty()) put(word);
-
-    LOG_INFO("new Tree object created with provided wordlist");
+        if (!word.empty())
+            put(word);
 }
 
 void Tree::put(const std::string& word)
@@ -62,20 +62,20 @@ void Tree::put(const std::string& word)
 
     if (!node_created && current->eow)
     {
-        LOG_WARN("tried to put word that was already in a Tree");
+        tlog::warning() << "word already exists in tree: " << word;
         return; // user put 2 same words
     }
 
     m_size++;
     current->eow = true;
-    LOG_INFO("new word inserted into Tree");
+    tlog::info() << word << " inserted successfully into a tree";
 }
 
 void Tree::remove(const std::string& word)
 {
     if (m_size == 0)
     {
-        LOG_WARN("tried to remove a word from an empty Tree");
+        tlog::warning() << "tried to remove a word from an empty tree";
         return;
     }
 
@@ -94,7 +94,7 @@ void Tree::remove(const std::string& word)
         // word doesnt exist in a Tree
         if (child_index == -1)
         {
-            LOG_WARN("tried to remove a word that did not exist in a Tree");
+            tlog::warning() << "tried to remove a word that does not exist. word: " << word;
             return;
         }
 
@@ -115,6 +115,11 @@ void Tree::remove(const std::string& word)
     {
         auto pair = to_be_deleted.top(); to_be_deleted.pop();
         auto pos = pair.first->children.begin() + pair.second;
+
+        tlog::info() << "removing node '"
+                << pair.first->children[pair.second].c
+                << "' (child of '" << pair.first->c << "')";
+
         pair.first->children.erase(pos);
     }
 }
@@ -124,10 +129,12 @@ std::vector<std::string> Tree::find(std::string prefix) const
     std::vector<std::string> out; // list of found words
     const TreeNode* current = &m_root;
 
+    tlog::info() << "starting searching for prefix: " << prefix;
+
     // empty Tree case
     if (m_size == 0)
     {
-        LOG_WARN("tried to search an empty Tree.");
+        tlog::warning() << "tried to search an empty tree";
         return out;
     }
 
@@ -173,7 +180,6 @@ std::vector<std::string> Tree::find(std::string prefix) const
         if (current->eow)
         {
             out.push_back(word);
-            LOG_INFO("word found");
 
             // we got all the words we wanted with current prefix
             if (--words_counter == 0)
@@ -202,6 +208,7 @@ std::vector<std::string> Tree::find(std::string prefix) const
             node_stack.push(&current->children[i]);
     }
 
+    tlog::info() << "found " << out.size() << " words with provided prefix";
     return out;
 }
 
