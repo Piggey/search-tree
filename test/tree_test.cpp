@@ -17,7 +17,6 @@ TEST(tree_class_test, constuctors)
     // init empty Tree
     Tree t;
     EXPECT_EQ(t.size(), 0);
-
     EXPECT_EQ(get_tree_node_count(&t), 1);
 
     // init Tree with words list
@@ -32,13 +31,16 @@ TEST(tree_class_test, put)
     Tree t;
     t.put("Kappa");
     EXPECT_EQ(t.size(), 1);
+    EXPECT_EQ(get_tree_node_count(&t), 1 + 5);
 
     t.put("Kapr");
     EXPECT_EQ(t.size(), 2);
+    EXPECT_EQ(get_tree_node_count(&t), 1 + 5 + 1);
 
     // try to put the same word in
     t.put("Kapr");
     EXPECT_EQ(t.size(), 2);
+    EXPECT_EQ(get_tree_node_count(&t), 1 + 5 + 1);
 }
 
 TEST(tree_class_test, remove)
@@ -53,25 +55,34 @@ TEST(tree_class_test, remove)
     t.put("kretyn");
     t.put("kreyoei");
 
+    EXPECT_EQ(get_tree_node_count(&t), 1 + 6 + 4);
+
     // normal remove() use case
     EXPECT_EQ(t.find("kr").size(), 2);
+
     t.remove("kretyn");
     EXPECT_EQ(t.find("kr").size(), 1);
+
     EXPECT_EQ(t.find("kr")[0], "kreyoei");
+
+    EXPECT_EQ(get_tree_node_count(&t), 1 + 6 + 4 - 3);
 
     // try to remove the same word
     t.remove("kretyn");
     EXPECT_EQ(t.find("kr").size(), 1);
+    EXPECT_EQ(get_tree_node_count(&t), 1 + 6 + 4 - 3);
 
 
     // try to remove word thats nested inside another word
     // (dont delete any nodes, but decrement word counter)
     t.put("kretyn");
     t.put("kretynka");
+    EXPECT_EQ(get_tree_node_count(&t), 1 + 6 + 4 + 2);
 
     EXPECT_EQ(t.size(), 3);
     t.remove("kretyn");
     EXPECT_EQ(t.size(), 2);
+    EXPECT_EQ(get_tree_node_count(&t), 1 + 6 + 4 + 2);
 
     auto found = t.find("kr");
     EXPECT_EQ(found[0], "kreyoei");
@@ -81,6 +92,7 @@ TEST(tree_class_test, remove)
 TEST(tree_class_test, find)
 {
     Tree t({ "foo", "bar", "baz", "fizz", "buzz", "fizzbuzz" });
+    EXPECT_EQ(get_tree_node_count(&t), 1 + 3 + 3 + 1 + 3 + 3 + 4);
 
     // normal search
     std::vector<std::string> found = t.find("ba"); // bar, baz
