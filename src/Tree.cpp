@@ -210,11 +210,6 @@ size_t Tree::size() const
     return m_size;
 }
 
-Tree::~Tree()
-{
-    // todo: free the memory from all the TreeNodes
-}
-
 const TreeNode* Tree::root() const
 {
     return &m_root;

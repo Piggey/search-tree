@@ -13,6 +13,8 @@ public:
      */
     Tree();
 
+    ~Tree() = default;
+
     /**
      * @brief initializes a Tree object with provided list of words
      * @param wordlist: vector of words to be put inside a Tree
@@ -51,8 +53,6 @@ public:
      * @return pointer to an immutable root node object
      */
     const TreeNode* root() const;
-
-    ~Tree();
 
 private: // fields
     TreeNode m_root;
