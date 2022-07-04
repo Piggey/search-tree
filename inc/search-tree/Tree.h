@@ -1,12 +1,15 @@
-#ifndef SEARCH_TREE_TREE_H
-#define SEARCH_TREE_TREE_H
+#pragma once
 
 #include "TreeNode.h"
 
 #include <string>
 
+namespace st
+{
+
 class Tree
 {
+
 public:
     /**
      * @brief initializes an empty Tree object.
@@ -58,5 +61,4 @@ private: // fields
     TreeNode m_root;
     size_t m_size;
 };
-
-#endif //SEARCH_TREE_TREE_H
+}

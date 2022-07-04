@@ -7,8 +7,7 @@ include_directories(inc)
 include_directories(lib)
 
 add_library(${PROJECT_NAME}
-        inc/Tree.h src/Tree.cpp
-        inc/TreeNode.h
+        inc/search-tree/Tree.h src/Tree.cpp
         )
 
 ## LIBRARIES ##

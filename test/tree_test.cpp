@@ -1,9 +1,12 @@
 #include "gtest/gtest.h"
-#include "Tree.h"
+#include "search-tree/Tree.h"
 
 #include <vector>
 #include <string>
 #include <queue>
+
+using st::Tree;
+using st::TreeNode;
 
 /**
  * @brief get the count of nodes currently used by the Tree

@@ -1,4 +1,4 @@
-#include "Tree.h"
+#include "search-tree/Tree.h"
 #include "tinylogger/tinylogger.h"
 
 #include <stack>
@@ -10,16 +10,16 @@
  * @attention this function returns -1 when child node was NOT found
  * @return index of child with char c, or -1 when not found
  */
-int check_node_exists(const TreeNode* parent, char c);
+int check_node_exists(const st::TreeNode* parent, char c);
 
-Tree::Tree()
+st::Tree::Tree()
 {
     m_root.c = 0;
     m_size = 0;
     tlog::info() << "new tree object created";
 }
 
-Tree::Tree(const std::vector<std::string>& wordlist)
+st::Tree::Tree(const std::vector<std::string>& wordlist)
 {
     tlog::info() << "creating new tree object with wordlist of size " << wordlist.size();
     m_root.c = 0;
@@ -30,7 +30,7 @@ Tree::Tree(const std::vector<std::string>& wordlist)
             put(word);
 }
 
-void Tree::put(const std::string& word)
+void st::Tree::put(const std::string& word)
 {
     // store the node we're putting a new node into
     // starting from root
@@ -71,7 +71,7 @@ void Tree::put(const std::string& word)
     tlog::info() << word << " inserted successfully into a tree";
 }
 
-void Tree::remove(const std::string& word)
+void st::Tree::remove(const std::string& word)
 {
     if (m_size == 0)
     {
@@ -124,7 +124,7 @@ void Tree::remove(const std::string& word)
     }
 }
 
-std::vector<std::string> Tree::find(std::string prefix) const
+std::vector<std::string> st::Tree::find(std::string prefix) const
 {
     std::vector<std::string> out; // list of found words
     const TreeNode* current = &m_root;
@@ -212,17 +212,17 @@ std::vector<std::string> Tree::find(std::string prefix) const
     return out;
 }
 
-size_t Tree::size() const
+size_t st::Tree::size() const
 {
     return m_size;
 }
 
-const TreeNode* Tree::root() const
+const st::TreeNode* st::Tree::root() const
 {
     return &m_root;
 }
 
-int check_node_exists(const TreeNode* parent, char c)
+int check_node_exists(const st::TreeNode* parent, char c)
 {
     for (int i = 0; i < parent->children.size(); i++)
     {

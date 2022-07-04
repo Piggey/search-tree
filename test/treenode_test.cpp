@@ -1,11 +1,11 @@
 #include "gtest/gtest.h"
-#include "TreeNode.h"
+#include "search-tree/TreeNode.h"
 
 #include <vector>
 
 TEST(tree_node_class_test, constructor)
 {
-    TreeNode tn;
+    st::TreeNode tn;
     EXPECT_EQ(tn.children.size(), 0);
     EXPECT_FALSE(tn.eow);
 }
