@@ -6,8 +6,7 @@ set(CMAKE_CXX_STANDARD 14)
 include_directories(inc)
 include_directories(lib)
 
-add_executable(${PROJECT_NAME}
-        src/main.cpp
+add_library(${PROJECT_NAME}
         inc/Tree.h src/Tree.cpp
         inc/TreeNode.h
         )
@@ -31,10 +30,9 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 add_executable(${PROJECT_NAME}_test
         test/treenode_test.cpp
         test/tree_test.cpp
-        inc/Tree.h src/Tree.cpp
-        inc/TreeNode.h
 )
 
+target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME}_test gtest_main)
 
 include(GoogleTest)
