@@ -14,9 +14,9 @@ Visualisation of this data structure is shown in the picture above.
 ## Getting started
 Typical use case of `Tree` class would look like as such:
 ```c++
-#include "Tree.h"
+#include "search-tree/Tree.h"
 
-Tree t;
+st::Tree t;
 t.put("bar"); // puts the word "baz" into a tree object t
 t.put("baz"); // same with "bar"
 
@@ -26,9 +26,9 @@ t.find("ba"); // returns: { "bar", "baz" }
 
 Alternatively, we can initialize a `Tree` object with a list of words to be put inside.
 ```c++
-#include "Tree.h"
+#include "search-tree/Tree.h"
 
-Tree t({ "bar", "baz" }); // puts all words from the list to the tree
+st::Tree t({ "bar", "baz" }); // puts all words from the list to the tree
 
 t.find("ba"); // returns: { "baz", "bar" }
 ```
@@ -63,7 +63,3 @@ When trying to search a tree with 'BAR' and 'baz'
 with prefix 'ba', only 'baz' will be returned.
 
 I want to add the option to be case-agnostic, which means the previous example should return both 'BAR' and 'baz'
-
-### ...Shouldn't this be a library??
-
-Yes. Yes it should.

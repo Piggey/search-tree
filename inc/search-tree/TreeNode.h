@@ -1,11 +1,11 @@
-#ifndef SEARCH_TREE_TREENODE_H
-#define SEARCH_TREE_TREENODE_H
+#pragma once
 
 #include <vector>
 
+namespace st
+{
+
 // structure of a single tree node
-// wondering whether it even should be public
-// maybe move it to Tree.cpp?
 struct TreeNode
 {
     // todo: make it work for utf-8 characters too
@@ -21,5 +21,4 @@ struct TreeNode
         this->c = c;
     }
 };
-
-#endif //SEARCH_TREE_TREENODE_H
+}
