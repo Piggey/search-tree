@@ -4,6 +4,8 @@
 #include <stack>
 #include <queue>
 
+// #define DEBUG_INFO
+
 /**
  * @brief finds the index of a child node with matching character value
  * @param parent: parent TreeNode pointer to be checked
@@ -18,12 +20,16 @@ st::Tree::Tree()
 {
     m_root.c = 0;
     m_size = 0;
+#ifdef DEBUG_INFO
     tlog::info() << "new tree object created";
+#endif
 }
 
 st::Tree::Tree(const std::vector<std::string>& wordlist)
 {
+#ifdef DEBUG_INFO
     tlog::info() << "creating new tree object with wordlist of size " << wordlist.size();
+#endif
     m_root.c = 0;
     m_size = 0;
 
@@ -70,7 +76,9 @@ void st::Tree::put(const std::string& word)
 
     m_size++;
     current->eow = true;
+#ifdef DEBUG_INFO
     tlog::info() << word << " inserted successfully into a tree";
+#endif
 }
 
 void st::Tree::remove(const std::string& word)
@@ -117,10 +125,11 @@ void st::Tree::remove(const std::string& word)
     {
         auto pair = to_be_deleted.top(); to_be_deleted.pop();
         auto pos = pair.first->children.begin() + pair.second;
-
+#ifdef DEBUG_INFO
         tlog::info() << "removing node '"
                 << pair.first->children[pair.second]->c
                 << "' (child of '" << pair.first->c << "')";
+#endif
 
         TreeNode* tmp = pair.first->children[pair.second];
         pair.first->children.erase(pos); // unhook the connection between nodes
@@ -133,7 +142,9 @@ std::vector<std::string> st::Tree::find(std::string prefix) const
     std::vector<std::string> out; // list of found words
     const TreeNode* current = &m_root;
 
+#ifdef DEBUG_INFO
     tlog::info() << "starting searching for prefix: " << prefix;
+#endif
 
     // empty Tree case
     if (m_size == 0)
@@ -213,7 +224,9 @@ std::vector<std::string> st::Tree::find(std::string prefix) const
             node_stack.push(current->children[i]);
     }
 
+#ifdef DEBUG_INFO
     tlog::info() << "found " << out.size() << " words with provided prefix";
+#endif
     return out;
 }
 
@@ -245,7 +258,9 @@ st::Tree::~Tree()
             q.push(child);
     }
 
+#ifdef DEBUG_INFO
     tlog::info() << "deleting " << to_be_deleted.size() << " nodes\n";
+#endif
 
     // actually freeing the memory
     while (!to_be_deleted.empty())
