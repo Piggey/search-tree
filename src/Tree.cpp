@@ -87,7 +87,7 @@ void st::Tree::remove(const std::string& word)
     std::stack<std::pair<TreeNode*, int>> to_be_deleted;
 
     // collect the nodes that will be deleted
-    for (int i = 0; i < word.size(); i++)
+    for (unsigned int i = 0; i < word.size(); i++)
     {
         char c = word[i];
         int child_index = get_child_index(current, c);
