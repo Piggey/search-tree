@@ -4,13 +4,14 @@
 #include <stack>
 
 /**
- * @brief check whether parent node has a child with char c
- * @param parent: parent Tree node
+ * @brief finds the index of a child node with matching character value
+ * @param parent: parent TreeNode pointer to be checked
  * @param c: character to be checked
  * @attention this function returns -1 when child node was NOT found
- * @return index of child with char c, or -1 when not found
+ * @return index of the child node in the parent's array of children.
+ * returns -1 if node was not found.
  */
-int check_node_exists(const st::TreeNode* parent, char c);
+inline int get_child_index(const st::TreeNode* parent, char c);
 
 st::Tree::Tree()
 {
@@ -43,7 +44,7 @@ void st::Tree::put(const std::string& word)
     for (char c : word)
     {
         // check if there is a node with this character
-        int child_index = get_node_index(current, c);
+        int child_index = get_child_index(current, c);
 
         if (child_index == -1) // does not exist
         {
@@ -89,7 +90,7 @@ void st::Tree::remove(const std::string& word)
     for (int i = 0; i < word.size(); i++)
     {
         char c = word[i];
-        int child_index = check_node_exists(current, c);
+        int child_index = get_child_index(current, c);
 
         // word doesnt exist in a Tree
         if (child_index == -1)
@@ -141,7 +142,7 @@ std::vector<std::string> st::Tree::find(std::string prefix) const
     // go through the nodes from the prefix, if they exist
     for (char c : prefix)
     {
-        int child_index = check_node_exists(current, c);
+        int child_index = get_child_index(current, c);
         if (child_index == -1)
             return out; // there arent any words with that prefix
 
@@ -162,13 +163,14 @@ std::vector<std::string> st::Tree::find(std::string prefix) const
     // from back to front so then
     // found answers will be from left side of the tree
     // to the right side
+    // todo: just use a fucking queue
     for (int i = current->children.size() - 1; i >= 0; i--)
     {
         // number of words to get with this prefix
         words_counter = current->children.size();
         words_counter_stack.push(words_counter);
 
-        node_stack.push(&current->children[i]);
+        node_stack.push(current->children[i]);
     }
 
     while (!node_stack.empty())
@@ -224,11 +226,14 @@ const st::TreeNode* st::Tree::root() const
 
 int check_node_exists(const st::TreeNode* parent, char c)
 {
-    for (int i = 0; i < parent->children.size(); i++)
-    {
-        if (parent->children[i].c == c)
-            return i;
-    }
+
+}
+
+inline int get_child_index(const st::TreeNode* parent, char c)
+{
+    for (unsigned int i = 0; i < parent->children.size(); i++)
+        if (parent->children[i]->c == c)
+            return (int) i;
 
     return -1;
 }
