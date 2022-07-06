@@ -76,8 +76,8 @@ TEST(tree_class_test, remove)
     EXPECT_EQ(get_tree_node_count(&t), 1 + 6 + 4 - 3);
 
 
-    // try to remove word thats nested inside another word
-    // (dont delete any nodes, but decrement word counter)
+    // try to remove word that's nested inside another word
+    // (don't delete any nodes, but decrement word counter)
     t.put("kretyn");
     t.put("kretynka");
     EXPECT_EQ(get_tree_node_count(&t), 1 + 6 + 4 + 2);
@@ -140,7 +140,7 @@ int get_tree_node_count(const Tree* tree)
 
         for (const auto& child : node->children)
         {
-            q.push(&child);
+            q.push(child);
             counter++;
         }
     }
