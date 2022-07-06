@@ -92,7 +92,7 @@ void st::Tree::remove(const std::string& word)
         char c = word[i];
         int child_index = get_child_index(current, c);
 
-        // word doesnt exist in a Tree
+        // word doesn't exist in a Tree
         if (child_index == -1)
         {
             tlog::warning() << "tried to remove a word that does not exist. word: " << word;
@@ -105,7 +105,7 @@ void st::Tree::remove(const std::string& word)
             to_be_deleted.push(std::make_pair(current, child_index));
         }
 
-        current = &current->children[child_index];
+        current = current->children[child_index];
     }
 
     current->eow = false;   // unset the end of word flag on the last node (if was used)
@@ -118,10 +118,12 @@ void st::Tree::remove(const std::string& word)
         auto pos = pair.first->children.begin() + pair.second;
 
         tlog::info() << "removing node '"
-                << pair.first->children[pair.second].c
+                << pair.first->children[pair.second]->c
                 << "' (child of '" << pair.first->c << "')";
 
-        pair.first->children.erase(pos);
+        TreeNode* tmp = pair.first->children[pair.second];
+        pair.first->children.erase(pos); // unhook the connection between nodes
+        delete tmp; // free the memory
     }
 }
 
@@ -144,9 +146,9 @@ std::vector<std::string> st::Tree::find(std::string prefix) const
     {
         int child_index = get_child_index(current, c);
         if (child_index == -1)
-            return out; // there arent any words with that prefix
+            return out; // there aren't any words with that prefix
 
-        current = &current->children[child_index];
+        current = current->children[child_index];
     }
 
 
@@ -207,7 +209,7 @@ std::vector<std::string> st::Tree::find(std::string prefix) const
         }
 
         for (int i = current->children.size() - 1; i >= 0; i--)
-            node_stack.push(&current->children[i]);
+            node_stack.push(current->children[i]);
     }
 
     tlog::info() << "found " << out.size() << " words with provided prefix";
@@ -224,7 +226,7 @@ const st::TreeNode* st::Tree::root() const
     return &m_root;
 }
 
-int check_node_exists(const st::TreeNode* parent, char c)
+st::Tree::~Tree()
 {
 
 }

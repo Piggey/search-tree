@@ -16,8 +16,6 @@ public:
      */
     Tree();
 
-    ~Tree() = default;
-
     /**
      * @brief initializes a Tree object with provided list of words
      * @param wordlist: vector of words to be put inside a Tree
@@ -25,7 +23,12 @@ public:
     explicit Tree(const std::vector<std::string>& wordlist);
 
     /**
-     * @brief put a word into a Tree
+     * @brief Tree object deconstructor. Deletes all TreeNodes inside of a Tree.
+     */
+    ~Tree();
+
+    /**
+     * @brief puts a word into a Tree
      * @param word: word to be put
      */
     void put(const std::string& word);
