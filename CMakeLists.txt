@@ -3,6 +3,12 @@ project(search_tree VERSION 1.0.0)
 
 set(CMAKE_CXX_STANDARD 14)
 
+if (MSVC)
+    add_compile_options(/W4 /WX)
+else()
+    add_compile_options(-Wall -Wextra -pedantic -Werror)
+endif()
+
 include_directories(inc)
 include_directories(lib)
 
