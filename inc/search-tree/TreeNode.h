@@ -9,9 +9,9 @@ namespace st
 struct TreeNode
 {
     // todo: make it work for utf-8 characters too
-    char c;                             // single character
-    std::vector<TreeNode> children;     // list of all children nodes
-    bool eow = false;                   // end of word flag
+    char c = -1;                            // single character
+    std::vector<TreeNode*> children;  // list of all children nodes
+    bool eow = false;                       // end of word flag
 
     TreeNode() = default;
 

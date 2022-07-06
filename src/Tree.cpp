@@ -43,20 +43,20 @@ void st::Tree::put(const std::string& word)
     for (char c : word)
     {
         // check if there is a node with this character
-        int child_node_index = check_node_exists(current, c);
+        int child_index = get_node_index(current, c);
 
-        if (child_node_index == -1) // does not exist
+        if (child_index == -1) // does not exist
         {
-            // create and add a new one
-            current->children.emplace_back(c);
+            // create and add a new node
+            auto* child = new TreeNode(c);
+            current->children.push_back(child);
             node_created = true;
 
-            // move into the child
-            current = &current->children[current->children.size() - 1];
+            current = child;
         }
         else // node already exists
         {
-            current = &current->children[child_node_index];
+            current = current->children[child_index];
         }
     }
 
