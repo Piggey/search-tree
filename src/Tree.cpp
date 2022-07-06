@@ -2,6 +2,7 @@
 #include "tinylogger/tinylogger.h"
 
 #include <stack>
+#include <queue>
 
 /**
  * @brief finds the index of a child node with matching character value
@@ -228,7 +229,30 @@ const st::TreeNode* st::Tree::root() const
 
 st::Tree::~Tree()
 {
+    std::stack<TreeNode*> to_be_deleted;
+    std::queue<TreeNode*> q;
 
+    for (TreeNode* child : m_root.children)
+        q.push(child);
+
+    // add all the allocated nodes on the stack
+    while (!q.empty())
+    {
+        TreeNode* node = q.front(); q.pop();
+        to_be_deleted.push(node);
+
+        for (TreeNode* child : node->children)
+            q.push(child);
+    }
+
+    tlog::info() << "deleting " << to_be_deleted.size() << " nodes\n";
+
+    // actually freeing the memory
+    while (!to_be_deleted.empty())
+    {
+        TreeNode* node = to_be_deleted.top(); to_be_deleted.pop();
+        delete node;
+    }
 }
 
 inline int get_child_index(const st::TreeNode* parent, char c)
