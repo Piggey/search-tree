@@ -16,6 +16,8 @@ add_library(${PROJECT_NAME}
         inc/search-tree/Tree.h src/Tree.cpp
         )
 
+add_subdirectory(benchmark)
+
 ## LIBRARIES ##
 include(FetchContent)
 
