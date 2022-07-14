@@ -1,3 +1,7 @@
 cmake-build-debug/
 cmake-build-debug-coverage/
 cmake-build-release/
+
+# library out files
+include/
+lib/

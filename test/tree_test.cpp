@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "search-tree/Tree.h"
+#include "../search_tree/Tree.h"
 
 #include <vector>
 #include <string>
