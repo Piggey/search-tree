@@ -1,6 +1,13 @@
 cmake_minimum_required(VERSION 3.21)
 set(CMAKE_CXX_STANDARD 14)
-project(libsearch-tree)
+project(libsearch-tree
+    DESCRIPTION "A tree data structure optimized for searching words given a prefix."
+    VERSION 1.1.0
+    LANGUAGES CXX
+    HOMEPAGE_URL https://github.com/Piggey/search-tree
+)
+
+set(BUILD_TESTS OFF)
 
 set(SEARCH_TREE_INSTALL_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include/search-tree)
 set(SEARCH_TREE_INSTALL_BIN_DIR ${PROJECT_SOURCE_DIR}/bin)

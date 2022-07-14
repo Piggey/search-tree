@@ -1,11 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
 
-project(search-tree
-        DESCRIPTION "A tree data structure optimized for searching words given a prefix."
-        VERSION 1.0.0
-        LANGUAGES CXX
-        HOMEPAGE_URL https://github.com/Piggey/search-tree
-)
+project(search-tree)
 
 set(SOURCE_FILES
         Tree.h Tree.cpp
