@@ -5,3 +5,4 @@ cmake-build-release/
 # library out files
 include/
 lib/
+bin/
