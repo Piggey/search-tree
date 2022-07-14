@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
 
-project(search_tree
+project(search-tree
         DESCRIPTION "A tree data structure optimized for searching words given a prefix."
         VERSION 1.0.0
         LANGUAGES CXX

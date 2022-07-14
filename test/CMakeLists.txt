@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(search_tree_test)
+project(search-tree-test)
 
 include_directories(${SEARCH_TREE_HEADERS_DIR})
 
@@ -21,7 +21,7 @@ add_executable(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME} gtest_main)
-target_link_libraries(${PROJECT_NAME} search_tree)
+target_link_libraries(${PROJECT_NAME} search-tree)
 
 include(GoogleTest)
 gtest_discover_tests(${PROJECT_NAME})
