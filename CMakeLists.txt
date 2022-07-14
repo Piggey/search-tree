@@ -9,9 +9,13 @@ project(libsearch-tree
 
 set(BUILD_TESTS OFF)
 
-set(SEARCH_TREE_INSTALL_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include/search-tree)
-set(SEARCH_TREE_INSTALL_BIN_DIR ${PROJECT_SOURCE_DIR}/bin)
-set(SEARCH_TREE_INSTALL_LIB_DIR ${PROJECT_SOURCE_DIR}/lib)
+## install it in project's directory
+# set(SEARCH_TREE_INSTALL_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include/search-tree)
+# set(SEARCH_TREE_INSTALL_BIN_DIR ${PROJECT_SOURCE_DIR}/bin)
+# set(SEARCH_TREE_INSTALL_LIB_DIR ${PROJECT_SOURCE_DIR}/lib)
+
+## install to /usr/local
+set(SEARCH_TREE_INSTALL_INCLUDE_DIR ${CMAKE_INSTALL_PREFIX}/include/search-tree)
 
 set(SEARCH_TREE_HEADERS_DIR ${PROJECT_SOURCE_DIR}/search-tree)
 
@@ -26,5 +30,9 @@ else()
 endif()
 
 add_subdirectory(search-tree)
-add_subdirectory(test)
 add_subdirectory(benchmark)
+
+if(${BUILD_TESTS} STREQUAL ON)
+    enable_testing()
+    add_subdirectory(test)
+endif()
