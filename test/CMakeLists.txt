@@ -25,5 +25,3 @@ target_link_libraries(${PROJECT_NAME} search-tree)
 
 include(GoogleTest)
 gtest_discover_tests(${PROJECT_NAME})
-
-install(TARGETS ${PROJECT_NAME} DESTINATION bin)
