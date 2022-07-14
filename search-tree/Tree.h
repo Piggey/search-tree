@@ -1,11 +1,11 @@
 #pragma once
 
-#include "TreeNode.h"
-
+#include <vector>
 #include <string>
 
 namespace st
 {
+struct TreeNode;
 
 class Tree
 {
@@ -61,7 +61,7 @@ public:
     const TreeNode* root() const;
 
 private: // fields
-    TreeNode m_root;
+    TreeNode* m_root;
     size_t m_size;
 };
 }

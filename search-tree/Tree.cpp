@@ -1,4 +1,5 @@
 #include "Tree.h"
+#include "TreeNode.h"
 
 #include <stack>
 #include <queue>
@@ -15,13 +16,13 @@ inline int get_child_index(const st::TreeNode* parent, char c);
 
 st::Tree::Tree()
 {
-    m_root.c = 0;
+    m_root = new TreeNode(0);
     m_size = 0;
 }
 
 st::Tree::Tree(const std::vector<std::string>& wordlist)
 {
-    m_root.c = 0;
+    m_root = new TreeNode(0);
     m_size = 0;
 
     for (const std::string& word: wordlist)
@@ -33,7 +34,7 @@ void st::Tree::put(const std::string& word)
 {
     // store the node we're putting a new node into
     // starting from root
-    TreeNode* current = &m_root;
+    TreeNode* current = m_root;
 
     // this prevents incrementing m_size
     // when 2 same words will be provided
@@ -71,7 +72,7 @@ void st::Tree::remove(const std::string& word)
     if (m_size == 0)
         return;
 
-    TreeNode* current = &m_root;
+    TreeNode* current = m_root;
 
     // keep the parent node and child index of the node we want to delete
     // stack since we want to delete them bottom up
@@ -112,7 +113,7 @@ void st::Tree::remove(const std::string& word)
 std::vector<std::string> st::Tree::find(std::string prefix) const
 {
     std::vector<std::string> out; // list of found words
-    const TreeNode* current = &m_root;
+    const TreeNode* current = m_root;
 
     // empty Tree case
     if (m_size == 0)
@@ -198,7 +199,7 @@ size_t st::Tree::size() const
 
 const st::TreeNode* st::Tree::root() const
 {
-    return &m_root;
+    return m_root;
 }
 
 st::Tree::~Tree()
@@ -206,8 +207,7 @@ st::Tree::~Tree()
     std::stack<TreeNode*> to_be_deleted;
     std::queue<TreeNode*> q;
 
-    for (TreeNode* child : m_root.children)
-        q.push(child);
+    q.push(m_root);
 
     // add all the allocated nodes on the stack
     while (!q.empty())
