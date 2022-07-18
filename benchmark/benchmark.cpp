@@ -40,7 +40,7 @@ int main()
     stop = high_resolution_clock::now();
     std::cout << duration_cast<milliseconds>(stop - start).count() << "ms\n\n";
 
-    std::vector<std::string> prefixes = {"b", "br", "bro"};
+    std::vector<std::string> prefixes = {"b", "br", "bro", "zzz"};
     for (const std::string& prefix : prefixes)
     {
         std::cout << "Searching the vector with prefix '" << prefix << "': ";
