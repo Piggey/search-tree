@@ -3,7 +3,7 @@
 #include <vector>
 #include <chrono>
 
-#include <Tree.h>
+#include "../search-tree/Tree.h"
 
 using std::chrono::high_resolution_clock;
 using std::chrono::duration_cast;
