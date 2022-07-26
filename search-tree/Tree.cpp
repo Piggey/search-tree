@@ -14,6 +14,15 @@
  */
 inline int get_child_index(const st::TreeNode* parent, char c);
 
+/**
+ * @brief gets all the possible paths with given prefix. There's only one path when ignore_case_sens is set to false.
+ * @param root: pointer to the root node of the Tree object to be searched through.
+ * @param prefix: word prefix
+ * @param ignore_case_sens: option to be case-insensitive.
+ * @return a queue object of pairs containing last TreeNode node and current prefix.
+ */
+std::queue<std::pair<const st::TreeNode*, const std::string>> get_all_possible_paths(const st::TreeNode* root, const std::string& prefix, bool ignore_case_sens);
+
 st::Tree::Tree()
 {
     m_root = new TreeNode(0);
@@ -110,83 +119,80 @@ void st::Tree::remove(const std::string& word)
     }
 }
 
-std::vector<std::string> st::Tree::find(std::string prefix) const
+std::vector<std::string> st::Tree::find(std::string prefix, bool ignore_case_sens) const
 {
     std::vector<std::string> out; // list of found words
-    const TreeNode* current = m_root;
 
     // empty Tree case
     if (m_size == 0)
         return out;
 
-    // go through the nodes from the prefix, if they exist
-    for (char c : prefix)
+    // store all paths with their prefixes
+    std::queue<std::pair<const TreeNode*, const std::string>> paths = get_all_possible_paths(m_root, prefix, ignore_case_sens);
+
+    while (!paths.empty())
     {
-        int child_index = get_child_index(current, c);
-        if (child_index == -1)
-            return out; // there aren't any words with that prefix
+        auto pair = paths.front(); paths.pop();
+        const TreeNode* current = pair.first;
+        std::string word = pair.second;
 
-        current = current->children[child_index];
-    }
+        std::stack<const TreeNode*> node_stack;          // for dfs
+        std::stack<unsigned int> words_counter_stack;    // stack used to keep prefix words counters
+        unsigned int words_counter;                      // for how many words we will be using current word
 
-    std::string word = prefix;
-    std::stack<const TreeNode*> node_stack; // for dfs
-    std::stack<int> words_counter_stack;    // stack used to keep prefix words counters
-    int words_counter;
-
-    // in case provided prefix is a word
-    if (current->eow)
-        out.push_back(word);
-
-    // push children nodes to node_stack
-    // from back to front so then
-    // found answers will be from left side of the tree
-    // to the right side
-    // todo: just use a fucking queue
-    for (int i = current->children.size() - 1; i >= 0; i--)
-    {
-        // number of words to get with this prefix
-        words_counter = current->children.size();
-        words_counter_stack.push(words_counter);
-
-        node_stack.push(current->children[i]);
-    }
-
-    while (!node_stack.empty())
-    {
-        current = node_stack.top(); node_stack.pop();
-        word += current->c;
-
-        // we got to the end of some word
+        // in case provided prefix is a word
         if (current->eow)
-        {
             out.push_back(word);
 
-            // we got all the words we wanted with current prefix
-            if (--words_counter == 0)
-            {
-                prefix.pop_back();
-
-                if (!words_counter_stack.empty())
-                {
-                    words_counter = words_counter_stack.top(); words_counter_stack.pop();
-                }
-            }
-
-            word = prefix; // ready the word variable for next word
-        }
-
-        if (current->children.size() > 1)
+        // push children nodes to node_stack
+        // from back to front so then
+        // found answers will be from left side of the tree
+        // to the right side
+        for (unsigned long i = current->children.size(); i-- > 0; )
         {
+            // number of words to get with this prefix
             words_counter = current->children.size();
             words_counter_stack.push(words_counter);
 
-            // since we will be coming back to this node
-            prefix += current->c;
+            node_stack.push(current->children[i]);
         }
 
-        for (int i = current->children.size() - 1; i >= 0; i--)
-            node_stack.push(current->children[i]);
+        while (!node_stack.empty())
+        {
+            current = node_stack.top(); node_stack.pop();
+            word += current->c;
+
+            // we got to the end of some word
+            if (current->eow)
+            {
+                out.push_back(word);
+
+                // we got all the words we wanted with current prefix
+                if (--words_counter == 0)
+                {
+                    prefix.pop_back();
+
+                    if (!words_counter_stack.empty())
+                    {
+                        words_counter = words_counter_stack.top(); words_counter_stack.pop();
+                    }
+                }
+
+                word = prefix; // ready the word variable for next word
+            }
+
+            if (current->children.size() > 1)
+            {
+                words_counter = current->children.size();
+                words_counter_stack.push(words_counter);
+
+                // since we will be coming back to this node
+                prefix += current->c;
+            }
+
+            for (unsigned long i = current->children.size(); i-- > 0; )
+                node_stack.push(current->children[i]);
+        }
     }
 
     return out;
@@ -229,9 +235,49 @@ st::Tree::~Tree()
 
 inline int get_child_index(const st::TreeNode* parent, char c)
 {
-    for (unsigned int i = 0; i < parent->children.size(); i++)
+    for (unsigned long i = 0; i < parent->children.size(); i++)
         if (parent->children[i]->c == c)
             return (int) i;
 
     return -1;
+}
+
+std::queue<std::pair<const st::TreeNode*, const std::string>> get_all_possible_paths(const st::TreeNode* root, const std::string& prefix, bool ignore_case_sens)
+{
+    // this queue holds only the last TreeNode pointer, along with the used prefix to get there
+    std::queue<std::pair<const st::TreeNode*, const std::string>> out;
+    const st::TreeNode* current = root;
+
+    // old way of doing it
+    if (!ignore_case_sens)
+    {
+        // go through the nodes from the prefix, if they exist
+        for (char c : prefix)
+        {
+            int child_index = get_child_index(current, c);
+            if (child_index == -1)
+                return out; // there aren't any words with that prefix
+
+            current = current->children[child_index];
+        }
+
+        out.push(std::make_pair(current, prefix));
+        return out;
+    }
+    else
+    {
+        // temporary stack
+        std::stack<const st::TreeNode*> stack;
+        stack.push(root);
+
+        std::string current_prefix;
+
+        while (!stack.empty())
+        {
+            stack.pop();
+
+        }
+    }
+
+    return out;
 }
