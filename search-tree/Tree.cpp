@@ -242,11 +242,29 @@ inline int get_child_index(const st::TreeNode* parent, char c)
     return -1;
 }
 
+// structure used to keeping the data necessary for searching case-insensitive prefixes
+struct TreeFrame
+{
+    const st::TreeNode* node;
+    int level;                  // level of how deep into the Tree this TreeNode is
+    std::string prefix;         // prefix up to this point
+
+    TreeFrame(const st::TreeNode *node, int level, std::string prefix)
+        : node(node), level(level), prefix(std::move(prefix)) {}
+};
+
 std::queue<std::pair<const st::TreeNode*, const std::string>> get_all_possible_paths(const st::TreeNode* root, const std::string& prefix, bool ignore_case_sens)
 {
     // this queue holds only the last TreeNode pointer, along with the used prefix to get there
     std::queue<std::pair<const st::TreeNode*, const std::string>> out;
     const st::TreeNode* current = root;
+
+    // in case prefix is empty
+    if (prefix.empty())
+    {
+        out.emplace(current, "");
+        return out;
+    }
 
     // old way of doing it
     if (!ignore_case_sens)
@@ -261,21 +279,63 @@ std::queue<std::pair<const st::TreeNode*, const std::string>> get_all_possible_p
             current = current->children[child_index];
         }
 
-        out.push(std::make_pair(current, prefix));
-        return out;
+        out.emplace(current, prefix);
     }
     else
     {
-        // temporary stack
-        std::stack<const st::TreeNode*> stack;
-        stack.push(root);
-
+        // temporary stack in pair with the level of how deep the TreeNode is in the Tree
+        std::stack<TreeFrame> stack;
         std::string current_prefix;
+
+        stack.emplace(current, -1, "");
 
         while (!stack.empty())
         {
-            stack.pop();
+            TreeFrame frame = stack.top(); stack.pop();
+            current = frame.node;
+            current_prefix = frame.prefix;
+            int level = frame.level;
 
+            // we reached the end of the prefix
+            if ((unsigned long) level == prefix.size() - 1)
+            {
+                out.emplace(current, current_prefix);
+                continue;
+            }
+
+            int index;
+            char c = prefix[level + 1];
+            // c is lowercase
+            if (c >= 'a' && c<= 'z')
+            {
+                index = get_child_index(current, (char) (c - 32));
+                if (index != -1)
+                    stack.emplace(current->children[index], level + 1, current_prefix + current->children[index]->c);
+
+                index = get_child_index(current, c);
+                if (index != -1)
+                    stack.emplace(current->children[index], level + 1, current_prefix + current->children[index]->c);
+            }
+
+            // c is uppercase
+            else if (c >= 'A' && c <= 'Z')
+            {
+                index = get_child_index(current, (char) (c + 32));
+                if (index != -1)
+                    stack.emplace(current->children[index], level + 1, current_prefix + current->children[index]->c);
+
+                index = get_child_index(current, c);
+                if (index != -1)
+                    stack.emplace(current->children[index], level + 1, current_prefix + current->children[index]->c);
+            }
+
+            // c is not a letter
+            else
+            {
+                index = get_child_index(current, c);
+                if (index != -1)
+                    stack.emplace(current->children[index], level + 1, current_prefix + current->children[index]->c);
+            }
         }
     }
 
