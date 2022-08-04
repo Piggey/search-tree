@@ -66,7 +66,6 @@ t.find("ba"); // returns: { "baz", "bar" }
 - `Tree.remove(word)` - removes given word from a tree and decrements word counter. Does nothing if word wasn't there to begin with.
 - `Tree.find(prefix)` - find and return a vector of all stored words with given prefix. Returns empty vector if there's none.
 - `Tree.size()` - returns a number of stored words in a tree object.
-- `Tree.root()` - returns an immutable reference to the root node of the tree.
 
 ## Problems with current implementation
 Problems that I'll try to fix in the next version of this project.

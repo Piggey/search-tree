@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
-#include <Tree.h>
-
 #include <vector>
+
+#include "../search-tree/TreeNode.h"
 
 TEST(tree_node_class_test, constructor)
 {

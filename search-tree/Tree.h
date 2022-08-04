@@ -43,22 +43,17 @@ public:
     /**
      * @brief find all words with provided prefix
      * @param prefix: first characters of a word
+     * @param ignore_case_sens: option to be case-insensitive. Set to false by default.
      * @attention function returns empty vector when nothing was found
      * @return a list of all words with provided prefix in a Tree
      */
-    std::vector<std::string> find(std::string prefix) const;
+    std::vector<std::string> find(std::string prefix, bool ignore_case_sens = false) const;
 
     /**
      * @brief number of words currently stored in a Tree
      * @return size
      */
     size_t size() const;
-
-    /**
-     * @brief get the pointer of the root TreeNode
-     * @return pointer to an immutable root node object
-     */
-    const TreeNode* root() const;
 
 private: // fields
     TreeNode* m_root;
