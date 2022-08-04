@@ -203,11 +203,6 @@ size_t st::Tree::size() const
     return m_size;
 }
 
-const st::TreeNode* st::Tree::root() const
-{
-    return m_root;
-}
-
 st::Tree::~Tree()
 {
     std::stack<TreeNode*> to_be_deleted;

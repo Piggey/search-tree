@@ -55,12 +55,6 @@ public:
      */
     size_t size() const;
 
-    /**
-     * @brief get the pointer of the root TreeNode
-     * @return pointer to an immutable root node object
-     */
-    const TreeNode* root() const;
-
 private: // fields
     TreeNode* m_root;
     size_t m_size;
