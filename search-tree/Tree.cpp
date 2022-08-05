@@ -57,7 +57,7 @@ void st::Tree::put(const std::string& word)
         if (child_index == -1) // does not exist
         {
             // create and add a new node
-            auto* child = new TreeNode(c);
+            auto* child = new TreeNode(c, current);
             current->children.push_back(child);
             node_created = true;
 
