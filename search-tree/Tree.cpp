@@ -3,6 +3,8 @@
 
 #include <stack>
 #include <queue>
+#include <stdexcept>
+#include <algorithm>
 
 /**
  * @brief finds the index of a child node with matching character value
@@ -22,6 +24,13 @@ inline int get_child_index(const st::TreeNode* parent, char c);
  * @return a queue of TreeNode object pointers at the end of the prefixes
  */
 std::queue<const st::TreeNode*> get_all_possible_paths(const st::TreeNode* root, const std::string& prefix, bool ignore_case_sens);
+
+/**
+ * @brief traverses through the Tree to get back the word
+ * @param final_node: pointer to the TreeNode that's the final node of some word (eow set to true)
+ * @return a std::string word of final node
+ */
+inline std::string get_word(const st::TreeNode* final_node);
 
 st::Tree::Tree()
 {
@@ -340,3 +349,20 @@ std::queue<std::pair<const st::TreeNode*, const std::string>> get_all_possible_p
     return out;
 }
 
+inline std::string get_word(const st::TreeNode* final_node)
+{
+    const st::TreeNode* tmp = final_node;
+    std::string out_word;
+
+    // hopefully this might speed things up
+    try { out_word.reserve(30); } catch (std::length_error& e) { fprintf(stderr, "%s", e.what()); }
+
+    while (tmp->parent != nullptr)
+    {
+        out_word += tmp->c;
+        tmp = tmp->parent;
+    }
+
+    std::reverse(out_word.begin(), out_word.end());
+    return out_word;
+}
