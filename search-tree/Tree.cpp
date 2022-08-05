@@ -130,79 +130,30 @@ void st::Tree::remove(const std::string& word)
 
 std::vector<std::string> st::Tree::find(const std::string& prefix, bool ignore_case_sens) const
 {
-    std::vector<std::string> out; // list of found words
-    std::string c_prefix = prefix; // copy of prefix
+    std::vector<std::string> out; // list of found words to be returned
 
     // empty Tree case
     if (m_size == 0)
         return out;
 
-    // store all paths with their prefixes
-    std::queue<std::pair<const TreeNode*, const std::string>> paths = get_all_possible_paths(m_root, prefix, ignore_case_sens);
-
+    // get all paths with their prefixes
+    auto paths = get_all_possible_paths(m_root, prefix, ignore_case_sens);
     while (!paths.empty())
     {
-        auto pair = paths.front(); paths.pop();
-        const TreeNode* current = pair.first;
-        std::string word = pair.second;
+        const TreeNode* current = paths.front(); paths.pop();
 
-        std::stack<const TreeNode*> node_stack;          // for dfs
-        std::stack<unsigned int> words_counter_stack;    // stack used to keep prefix words counters
-        unsigned int words_counter;                      // for how many words we will be using current word
-
-        // in case provided prefix is a word
-        if (current->eow)
-            out.push_back(word);
-
-        // push children nodes to node_stack
-        // from back to front so then
-        // found answers will be from left side of the tree
-        // to the right side
-        for (unsigned long i = current->children.size(); i-- > 0; )
-        {
-            // number of words to get with this prefix
-            words_counter = current->children.size();
-            words_counter_stack.push(words_counter);
-
-            node_stack.push(current->children[i]);
-        }
-
-        while (!node_stack.empty())
+        std::stack<const TreeNode*> node_stack; // for dfs
+        node_stack.push(current);
+        while(!node_stack.empty())
         {
             current = node_stack.top(); node_stack.pop();
-            word += current->c;
 
             // we got to the end of some word
             if (current->eow)
-            {
-                out.push_back(word);
+                out.emplace_back(get_word(current));
 
-                // we got all the words we wanted with current prefix
-                if (--words_counter == 0)
-                {
-                    c_prefix = prefix;
-
-                    if (!words_counter_stack.empty())
-                    {
-                        words_counter = words_counter_stack.top(); words_counter_stack.pop();
-                    }
-                }
-
-                if (current->children.empty())
-                    word = c_prefix; // ready the word variable for next word
-            }
-
-            if (current->children.size() > 1)
-            {
-                words_counter = current->children.size();
-                words_counter_stack.push(words_counter);
-
-                // since we will be coming back to this node
-                // c_prefix += current->c;
-                c_prefix = word;
-            }
-
-            for (unsigned long i = current->children.size(); i-- > 0; )
+            // add all the children nodes to the stack
+            for (unsigned int i = current->children.size(); i-- > 0; )
                 node_stack.push(current->children[i]);
         }
     }
