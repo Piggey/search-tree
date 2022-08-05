@@ -19,9 +19,9 @@ inline int get_child_index(const st::TreeNode* parent, char c);
  * @param root: pointer to the root node of the Tree object to be searched through.
  * @param prefix: word prefix
  * @param ignore_case_sens: option to be case-insensitive.
- * @return a queue object of pairs containing last TreeNode node and current prefix.
+ * @return a queue of TreeNode object pointers at the end of the prefixes
  */
-std::queue<std::pair<const st::TreeNode*, const std::string>> get_all_possible_paths(const st::TreeNode* root, const std::string& prefix, bool ignore_case_sens);
+std::queue<const st::TreeNode*> get_all_possible_paths(const st::TreeNode* root, const std::string& prefix, bool ignore_case_sens);
 
 st::Tree::Tree()
 {
@@ -308,11 +308,11 @@ std::queue<std::pair<const st::TreeNode*, const std::string>> get_all_possible_p
             {
                 index = get_child_index(current, (char) (c - 32));
                 if (index != -1)
-                    stack.emplace(current->children[index], level + 1, current_prefix + current->children[index]->c);
+                    stack.emplace(current->children[index], level + 1);
 
                 index = get_child_index(current, c);
                 if (index != -1)
-                    stack.emplace(current->children[index], level + 1, current_prefix + current->children[index]->c);
+                    stack.emplace(current->children[index], level + 1);
             }
 
             // c is uppercase
@@ -320,11 +320,11 @@ std::queue<std::pair<const st::TreeNode*, const std::string>> get_all_possible_p
             {
                 index = get_child_index(current, (char) (c + 32));
                 if (index != -1)
-                    stack.emplace(current->children[index], level + 1, current_prefix + current->children[index]->c);
+                    stack.emplace(current->children[index], level + 1);
 
                 index = get_child_index(current, c);
                 if (index != -1)
-                    stack.emplace(current->children[index], level + 1, current_prefix + current->children[index]->c);
+                    stack.emplace(current->children[index], level + 1);
             }
 
             // c is not a letter
@@ -332,10 +332,11 @@ std::queue<std::pair<const st::TreeNode*, const std::string>> get_all_possible_p
             {
                 index = get_child_index(current, c);
                 if (index != -1)
-                    stack.emplace(current->children[index], level + 1, current_prefix + current->children[index]->c);
+                    stack.emplace(current->children[index], level + 1);
             }
         }
     }
 
     return out;
 }
+
