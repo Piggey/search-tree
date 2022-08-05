@@ -3,6 +3,8 @@
 
 #include <stack>
 #include <queue>
+#include <stdexcept>
+#include <algorithm>
 
 /**
  * @brief finds the index of a child node with matching character value
@@ -19,9 +21,16 @@ inline int get_child_index(const st::TreeNode* parent, char c);
  * @param root: pointer to the root node of the Tree object to be searched through.
  * @param prefix: word prefix
  * @param ignore_case_sens: option to be case-insensitive.
- * @return a queue object of pairs containing last TreeNode node and current prefix.
+ * @return a queue of TreeNode object pointers at the end of the prefixes
  */
-std::queue<std::pair<const st::TreeNode*, const std::string>> get_all_possible_paths(const st::TreeNode* root, const std::string& prefix, bool ignore_case_sens);
+std::queue<const st::TreeNode*> get_all_possible_paths(const st::TreeNode* root, const std::string& prefix, bool ignore_case_sens);
+
+/**
+ * @brief traverses through the Tree to get back the word
+ * @param final_node: pointer to the TreeNode that's the final node of some word (eow set to true)
+ * @return a std::string word of final node
+ */
+inline std::string get_word(const st::TreeNode* final_node);
 
 st::Tree::Tree()
 {
@@ -57,7 +66,7 @@ void st::Tree::put(const std::string& word)
         if (child_index == -1) // does not exist
         {
             // create and add a new node
-            auto* child = new TreeNode(c);
+            auto* child = new TreeNode(c, current);
             current->children.push_back(child);
             node_created = true;
 
@@ -99,7 +108,7 @@ void st::Tree::remove(const std::string& word)
 
         // one word is using current node
         if (find(word.substr(0, i + 1)).size() <= 1)
-            to_be_deleted.push(std::make_pair(current, child_index));
+            to_be_deleted.emplace(current, child_index);
 
         current = current->children[child_index];
     }
@@ -121,79 +130,30 @@ void st::Tree::remove(const std::string& word)
 
 std::vector<std::string> st::Tree::find(const std::string& prefix, bool ignore_case_sens) const
 {
-    std::vector<std::string> out; // list of found words
-    std::string c_prefix = prefix; // copy of prefix
+    std::vector<std::string> out; // list of found words to be returned
 
     // empty Tree case
     if (m_size == 0)
         return out;
 
-    // store all paths with their prefixes
-    std::queue<std::pair<const TreeNode*, const std::string>> paths = get_all_possible_paths(m_root, prefix, ignore_case_sens);
-
+    // get all paths with their prefixes
+    auto paths = get_all_possible_paths(m_root, prefix, ignore_case_sens);
     while (!paths.empty())
     {
-        auto pair = paths.front(); paths.pop();
-        const TreeNode* current = pair.first;
-        std::string word = pair.second;
+        const TreeNode* current = paths.front(); paths.pop();
 
-        std::stack<const TreeNode*> node_stack;          // for dfs
-        std::stack<unsigned int> words_counter_stack;    // stack used to keep prefix words counters
-        unsigned int words_counter;                      // for how many words we will be using current word
-
-        // in case provided prefix is a word
-        if (current->eow)
-            out.push_back(word);
-
-        // push children nodes to node_stack
-        // from back to front so then
-        // found answers will be from left side of the tree
-        // to the right side
-        for (unsigned long i = current->children.size(); i-- > 0; )
-        {
-            // number of words to get with this prefix
-            words_counter = current->children.size();
-            words_counter_stack.push(words_counter);
-
-            node_stack.push(current->children[i]);
-        }
-
-        while (!node_stack.empty())
+        std::stack<const TreeNode*> node_stack; // for dfs
+        node_stack.push(current);
+        while(!node_stack.empty())
         {
             current = node_stack.top(); node_stack.pop();
-            word += current->c;
 
             // we got to the end of some word
             if (current->eow)
-            {
-                out.push_back(word);
+                out.emplace_back(get_word(current));
 
-                // we got all the words we wanted with current prefix
-                if (--words_counter == 0)
-                {
-                    c_prefix = prefix;
-
-                    if (!words_counter_stack.empty())
-                    {
-                        words_counter = words_counter_stack.top(); words_counter_stack.pop();
-                    }
-                }
-
-                if (current->children.empty())
-                    word = c_prefix; // ready the word variable for next word
-            }
-
-            if (current->children.size() > 1)
-            {
-                words_counter = current->children.size();
-                words_counter_stack.push(words_counter);
-
-                // since we will be coming back to this node
-                // c_prefix += current->c;
-                c_prefix = word;
-            }
-
-            for (unsigned long i = current->children.size(); i-- > 0; )
+            // add all the children nodes to the stack
+            for (unsigned int i = current->children.size(); i-- > 0; )
                 node_stack.push(current->children[i]);
         }
     }
@@ -245,22 +205,21 @@ struct TreeFrame
 {
     const st::TreeNode* node;
     int level;                  // level of how deep into the Tree this TreeNode is
-    std::string prefix;         // prefix up to this point
 
-    TreeFrame(const st::TreeNode *node, int level, std::string prefix)
-        : node(node), level(level), prefix(std::move(prefix)) {}
+    TreeFrame(const st::TreeNode *node, int level)
+        : node(node), level(level) {}
 };
 
-std::queue<std::pair<const st::TreeNode*, const std::string>> get_all_possible_paths(const st::TreeNode* root, const std::string& prefix, bool ignore_case_sens)
+std::queue<const st::TreeNode*> get_all_possible_paths(const st::TreeNode* root, const std::string& prefix, bool ignore_case_sens)
 {
     // this queue holds only the last TreeNode pointer, along with the used prefix to get there
-    std::queue<std::pair<const st::TreeNode*, const std::string>> out;
+    std::queue<const st::TreeNode*> out;
     const st::TreeNode* current = root;
 
     // in case prefix is empty
     if (prefix.empty())
     {
-        out.emplace(current, "");
+        out.emplace(current);
         return out;
     }
 
@@ -277,27 +236,25 @@ std::queue<std::pair<const st::TreeNode*, const std::string>> get_all_possible_p
             current = current->children[child_index];
         }
 
-        out.emplace(current, prefix);
+        out.emplace(current);
     }
     else
     {
         // temporary stack in pair with the level of how deep the TreeNode is in the Tree
         std::stack<TreeFrame> stack;
-        std::string current_prefix;
 
-        stack.emplace(current, -1, "");
+        stack.emplace(current, -1);
 
         while (!stack.empty())
         {
             TreeFrame frame = stack.top(); stack.pop();
             current = frame.node;
-            current_prefix = frame.prefix;
             int level = frame.level;
 
             // we reached the end of the prefix
             if ((unsigned long) level == prefix.size() - 1)
             {
-                out.emplace(current, current_prefix);
+                out.emplace(current);
                 continue;
             }
 
@@ -308,11 +265,11 @@ std::queue<std::pair<const st::TreeNode*, const std::string>> get_all_possible_p
             {
                 index = get_child_index(current, (char) (c - 32));
                 if (index != -1)
-                    stack.emplace(current->children[index], level + 1, current_prefix + current->children[index]->c);
+                    stack.emplace(current->children[index], level + 1);
 
                 index = get_child_index(current, c);
                 if (index != -1)
-                    stack.emplace(current->children[index], level + 1, current_prefix + current->children[index]->c);
+                    stack.emplace(current->children[index], level + 1);
             }
 
             // c is uppercase
@@ -320,11 +277,11 @@ std::queue<std::pair<const st::TreeNode*, const std::string>> get_all_possible_p
             {
                 index = get_child_index(current, (char) (c + 32));
                 if (index != -1)
-                    stack.emplace(current->children[index], level + 1, current_prefix + current->children[index]->c);
+                    stack.emplace(current->children[index], level + 1);
 
                 index = get_child_index(current, c);
                 if (index != -1)
-                    stack.emplace(current->children[index], level + 1, current_prefix + current->children[index]->c);
+                    stack.emplace(current->children[index], level + 1);
             }
 
             // c is not a letter
@@ -332,10 +289,28 @@ std::queue<std::pair<const st::TreeNode*, const std::string>> get_all_possible_p
             {
                 index = get_child_index(current, c);
                 if (index != -1)
-                    stack.emplace(current->children[index], level + 1, current_prefix + current->children[index]->c);
+                    stack.emplace(current->children[index], level + 1);
             }
         }
     }
 
     return out;
+}
+
+inline std::string get_word(const st::TreeNode* final_node)
+{
+    const st::TreeNode* tmp = final_node;
+    std::string out_word;
+
+    // hopefully this might speed things up
+    try { out_word.reserve(30); } catch (std::length_error& e) { fprintf(stderr, "%s", e.what()); }
+
+    while (tmp->parent != nullptr)
+    {
+        out_word += tmp->c;
+        tmp = tmp->parent;
+    }
+
+    std::reverse(out_word.begin(), out_word.end());
+    return out_word;
 }

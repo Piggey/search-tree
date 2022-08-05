@@ -78,10 +78,10 @@ TEST(tree_class_test, find)
     Tree t({ "foo", "bar", "bara", "bare", "baz", "fizz", "buzz", "fizzbuzz" });
 
     // normal search
-    std::vector<std::string> found = t.find("b"); // bar, baz, bara, bare
-    std::vector<std::string> correct = { "bar", "bara", "bare", "baz" };
+    std::vector<std::string> found = t.find("b");
+    std::vector<std::string> correct = { "bar", "bara", "bare", "baz", "buzz" };
 
-    EXPECT_EQ(found.size(), 4);
+    EXPECT_EQ(found.size(), correct.size());
     for (unsigned int i = 0; i < found.size(); i++)
         EXPECT_EQ(found[i], correct[i]);
 
@@ -90,15 +90,21 @@ TEST(tree_class_test, find)
     EXPECT_EQ(found.size(), 1);
     EXPECT_EQ(found[0], "fizzbuzz");
 
+    found = t.find("bar");
+    correct = { "bar", "bara", "bare" };
+    EXPECT_EQ(found.size(), correct.size());
+    for (unsigned int i = 0; i < found.size(); i++)
+        EXPECT_EQ(found[i], correct[i]);
+
+
     // search for a word that doesnt exist in Tree
     found = t.find("abcd");
     EXPECT_EQ(found.size(), 0);
 
     // search with empty string
     found = t.find("");
-    EXPECT_EQ(found.size(), 8);
-
     correct = { "foo", "fizz", "fizzbuzz", "bar", "bara", "bare", "baz", "buzz" };
+    EXPECT_EQ(found.size(), correct.size());
     for(unsigned int i = 0; i < correct.size(); i++)
         EXPECT_EQ(found[i], correct[i]);
 
@@ -116,7 +122,15 @@ TEST(tree_class_test, find_case_insensitive)
 {
     Tree t({ "fiZZ", "fizzBUZZ", "fizzbuzz", "FIZZBUZZ", "[]square" });
 
-    auto found = t.find("fizzb", true);
+    // do NOT ignore case sensitivity when not asked
+    auto found = t.find("fizz", false);
+    std::vector<std::string> correct = { "fizzBUZZ", "fizzbuzz" };
+    EXPECT_EQ(found.size(), correct.size());
+    for(unsigned int i = 0; i < correct.size(); i++)
+        EXPECT_EQ(found[i], correct[i]);
+
+
+    found = t.find("fizzb", true);
     EXPECT_EQ(found.size(), 3);
     EXPECT_EQ(found[0], "fizzbuzz");
     EXPECT_EQ(found[1], "fizzBUZZ");
@@ -136,7 +150,7 @@ TEST(tree_class_test, find_case_insensitive)
 
     // empty string as prefix
     found = t.find("", true);
-    std::vector<std::string> correct = { "fiZZ", "fizzBUZZ", "fizzbuzz", "FIZZBUZZ", "[]square" };
+    correct = { "fiZZ", "fizzBUZZ", "fizzbuzz", "FIZZBUZZ", "[]square" };
 
     EXPECT_EQ(found.size(), 5);
     for (unsigned int i = 0; i < found.size(); i++)
