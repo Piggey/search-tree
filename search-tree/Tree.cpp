@@ -108,7 +108,7 @@ void st::Tree::remove(const std::string& word)
 
         // one word is using current node
         if (find(word.substr(0, i + 1)).size() <= 1)
-            to_be_deleted.push(std::make_pair(current, child_index));
+            to_be_deleted.emplace(current, child_index);
 
         current = current->children[child_index];
     }
