@@ -254,10 +254,9 @@ struct TreeFrame
 {
     const st::TreeNode* node;
     int level;                  // level of how deep into the Tree this TreeNode is
-    std::string prefix;         // prefix up to this point
 
-    TreeFrame(const st::TreeNode *node, int level, std::string prefix)
-        : node(node), level(level), prefix(std::move(prefix)) {}
+    TreeFrame(const st::TreeNode *node, int level)
+        : node(node), level(level) {}
 };
 
 std::queue<std::pair<const st::TreeNode*, const std::string>> get_all_possible_paths(const st::TreeNode* root, const std::string& prefix, bool ignore_case_sens)
