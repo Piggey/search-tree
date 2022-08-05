@@ -119,9 +119,10 @@ void st::Tree::remove(const std::string& word)
     }
 }
 
-std::vector<std::string> st::Tree::find(std::string prefix, bool ignore_case_sens) const
+std::vector<std::string> st::Tree::find(const std::string& prefix, bool ignore_case_sens) const
 {
     std::vector<std::string> out; // list of found words
+    std::string c_prefix = prefix; // copy of prefix
 
     // empty Tree case
     if (m_size == 0)
@@ -170,7 +171,7 @@ std::vector<std::string> st::Tree::find(std::string prefix, bool ignore_case_sen
                 // we got all the words we wanted with current prefix
                 if (--words_counter == 0)
                 {
-                    prefix.pop_back();
+                    c_prefix = prefix;
 
                     if (!words_counter_stack.empty())
                     {
@@ -178,7 +179,8 @@ std::vector<std::string> st::Tree::find(std::string prefix, bool ignore_case_sen
                     }
                 }
 
-                word = prefix; // ready the word variable for next word
+                if (current->children.empty())
+                    word = c_prefix; // ready the word variable for next word
             }
 
             if (current->children.size() > 1)
@@ -187,7 +189,8 @@ std::vector<std::string> st::Tree::find(std::string prefix, bool ignore_case_sen
                 words_counter_stack.push(words_counter);
 
                 // since we will be coming back to this node
-                prefix += current->c;
+                // c_prefix += current->c;
+                c_prefix = word;
             }
 
             for (unsigned long i = current->children.size(); i-- > 0; )
