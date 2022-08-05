@@ -259,16 +259,16 @@ struct TreeFrame
         : node(node), level(level) {}
 };
 
-std::queue<std::pair<const st::TreeNode*, const std::string>> get_all_possible_paths(const st::TreeNode* root, const std::string& prefix, bool ignore_case_sens)
+std::queue<const st::TreeNode*> get_all_possible_paths(const st::TreeNode* root, const std::string& prefix, bool ignore_case_sens)
 {
     // this queue holds only the last TreeNode pointer, along with the used prefix to get there
-    std::queue<std::pair<const st::TreeNode*, const std::string>> out;
+    std::queue<const st::TreeNode*> out;
     const st::TreeNode* current = root;
 
     // in case prefix is empty
     if (prefix.empty())
     {
-        out.emplace(current, "");
+        out.emplace(current);
         return out;
     }
 
@@ -285,27 +285,25 @@ std::queue<std::pair<const st::TreeNode*, const std::string>> get_all_possible_p
             current = current->children[child_index];
         }
 
-        out.emplace(current, prefix);
+        out.emplace(current);
     }
     else
     {
         // temporary stack in pair with the level of how deep the TreeNode is in the Tree
         std::stack<TreeFrame> stack;
-        std::string current_prefix;
 
-        stack.emplace(current, -1, "");
+        stack.emplace(current, -1);
 
         while (!stack.empty())
         {
             TreeFrame frame = stack.top(); stack.pop();
             current = frame.node;
-            current_prefix = frame.prefix;
             int level = frame.level;
 
             // we reached the end of the prefix
             if ((unsigned long) level == prefix.size() - 1)
             {
-                out.emplace(current, current_prefix);
+                out.emplace(current);
                 continue;
             }
 
