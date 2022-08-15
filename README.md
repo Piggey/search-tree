@@ -49,6 +49,11 @@ t.put("baz"); // same with "bar"
 
 // returns a vector of all words in a tree object with this prefix
 t.find("ba"); // returns: { "bar", "baz" }
+
+/* SINCE VERSION 1.2.0 */
+// you can now ignore case sensitivity when searching for a word
+t.put("BAR");
+t.find("bar", true); // returns: { "bar", "BAR" }
 ```
 
 Alternatively, we can initialize a `Tree` object with a list of words to be put inside.
@@ -85,10 +90,3 @@ Instead, both nodes 'B' and 'D' should use the same 'a' node.
 
 **Update:** either I'm very dumb, or joining nodes like that would dramatically slow down the searching,
 which is the main point of this data structure, so I decided to keep it as is.
-
-### No option to be case-agnostic
-
-When trying to search a tree with 'BAR' and 'baz'
-with prefix 'ba', only 'baz' will be returned.
-
-I want to add the option to be case-agnostic, which means the previous example should return both 'BAR' and 'baz'
